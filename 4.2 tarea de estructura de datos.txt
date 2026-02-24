@@ -1,0 +1,186 @@
+4.2 tarea de estructura de datos
+import java.util.Scanner;
+
+public class CalculoSalario {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        // Lectura de datos
+        System.out.print("Ingrese el nombre del trabajador: ");
+        String nombre = scanner.nextLine();
+
+        System.out.print("Ingrese las horas trabajadas: ");
+        double horas = scanner.nextDouble();
+
+        System.out.print("Ingrese el precio por hora: ");
+        double precioHora = scanner.nextDouble();
+
+        // Cálculos
+        double salarioBruto = horas * precioHora;
+        double impuestos = salarioBruto * 0.20; // 20%
+        double salarioNeto = salarioBruto - impuestos;
+
+        // Resultados
+        System.out.println("\n--- Resultado ---");
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Salario Bruto: $" + salarioBruto);
+        System.out.println("Salario Neto: $" + salarioNeto);
+
+        scanner.close();
+    }
+}
+4.3
+
+import java.util.Scanner;
+
+public class EstructurasSelectivas {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        // ==============================
+        // 🔹 1. Alternativa Simple
+        // ==============================
+        System.out.print("Ingrese un número: ");
+        int numero = scanner.nextInt();
+
+        if (numero > 0) {
+            System.out.println("El número es positivo.");
+        }
+
+        // ==============================
+        // 🔹 2. Alternativa Doble
+        // ==============================
+        System.out.print("\nIngrese su edad: ");
+        int edad = scanner.nextInt();
+
+        if (edad >= 18) {
+            System.out.println("Es mayor de edad.");
+        } else {
+            System.out.println("Es menor de edad.");
+        }
+
+        // ==============================
+        // 🔹 3. Alternativa Múltiple
+        // ==============================
+        System.out.print("\nIngrese su calificación (0-100): ");
+        int nota = scanner.nextInt();
+
+        if (nota >= 90) {
+            System.out.println("Excelente");
+        } else if (nota >= 70) {
+            System.out.println("Bueno");
+        } else if (nota >= 60) {
+            System.out.println("Regular");
+        } else if (nota >= 0) {
+            System.out.println("Reprobado");
+        } else {
+            System.out.println("Calificación inválida");
+        }
+
+        scanner.close();
+    }
+}
+4.4
+import java.util.Scanner;
+
+public class AlternativaSimple {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Ingrese un número: ");
+        int numero = scanner.nextInt();
+
+        // Alternativa simple (if-then)
+        if (numero > 100) {
+            System.out.println("El número es mayor que 100.");
+        }
+
+        System.out.println("Fin del programa.");
+
+        scanner.close();
+    }
+}
+tarea 2
+import java.util.Scanner;
+
+public class AlternativaDoble {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Ingrese un número: ");
+        int numero = scanner.nextInt();
+
+        // Alternativa doble (if-then-else)
+        if (numero % 2 == 0) {
+            System.out.println("El número es PAR.");
+        } else {
+            System.out.println("El número es IMPAR.");
+        }
+
+        scanner.close();
+    }
+}
+
+tarea 4.2
+import java.util.Scanner;
+
+public class EcuacionPrimerGrado {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        double a, b, x;
+
+        System.out.print("Ingrese el valor de a: ");
+        a = scanner.nextDouble();
+
+        System.out.print("Ingrese el valor de b: ");
+        b = scanner.nextDouble();
+
+        if (a != 0) {
+            x = -b / a;
+            System.out.println("La solución es: x = " + x);
+        } else {
+            if (b != 0) {
+                System.out.println("Solución imposible.");
+            } else {
+                System.out.println("Solución indeterminada.");
+            }
+        }
+
+        scanner.close();
+    }
+}
+
+tarea 4.7
+import java.util.Scanner;
+
+public class AnioBisiesto {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        int anio;
+
+        System.out.print("Ingrese un año: ");
+        anio = scanner.nextInt();
+
+        if ((anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0)) {
+            System.out.println("El año " + anio + " es bisiesto.");
+        } else {
+            System.out.println("El año " + anio + " no es bisiesto.");
+        }
+
+        scanner.close();
+    }
+}
