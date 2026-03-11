@@ -1,0 +1,78 @@
+SistemaReservasHotel/
+│
+├── README.md
+└── src/
+    ├── ReservaHotel.java
+    └── Main.java
+
+    public class ReservaHotel {
+
+    private String nombreCliente;
+    private String fechaEntrada;
+    private String fechaSalida;
+    private int numeroHabitacion;
+    private boolean activa;
+
+    // Constructor
+    public ReservaHotel(String nombreCliente, String fechaEntrada, String fechaSalida, int numeroHabitacion) {
+        this.nombreCliente = nombreCliente;
+        this.fechaEntrada = fechaEntrada;
+        this.fechaSalida = fechaSalida;
+        this.numeroHabitacion = numeroHabitacion;
+        this.activa = false;
+    }
+
+    // Crear una nueva reserva
+    public void nuevaReserva() {
+        if (!activa) {
+            activa = true;
+            System.out.println("Reserva creada para " + nombreCliente);
+        } else {
+            System.out.println("La reserva ya está activa.");
+        }
+    }
+
+    // Cancelar reserva
+    public void cancelarReserva() {
+        if (activa) {
+            activa = false;
+            System.out.println("La reserva de " + nombreCliente + " ha sido cancelada.");
+        } else {
+            System.out.println("No hay reserva activa para cancelar.");
+        }
+    }
+
+    // Consultar información de la reserva
+    public void consultarReserva() {
+        System.out.println("Cliente: " + nombreCliente);
+        System.out.println("Fecha de entrada: " + fechaEntrada);
+        System.out.println("Fecha de salida: " + fechaSalida);
+        System.out.println("Número de habitación: " + numeroHabitacion);
+        System.out.println("Estado de reserva: " + (activa ? "Activa" : "Cancelada"));
+        System.out.println("---------------------------");
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        // Crear objetos ReservaHotel
+        ReservaHotel reserva1 = new ReservaHotel("Carlos Gómez", "10/04/2026", "15/04/2026", 101);
+        ReservaHotel reserva2 = new ReservaHotel("Ana López", "12/04/2026", "14/04/2026", 205);
+
+        // Crear reservas
+        reserva1.nuevaReserva();
+        reserva2.nuevaReserva();
+
+        // Consultar reservas
+        reserva1.consultarReserva();
+        reserva2.consultarReserva();
+
+        // Cancelar una reserva
+        reserva1.cancelarReserva();
+
+        // Consultar nuevamente
+        reserva1.consultarReserva();
+    }
+}

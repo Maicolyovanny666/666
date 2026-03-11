@@ -1,0 +1,56 @@
+SistemaPerfumes/
+│
+├── README.md
+└── src/
+    ├── Perfume.java
+    └── Main.java
+
+    public class Perfume {
+
+    private String nombre;
+    private String marca;
+    private double capacidad; // mililitros disponibles
+    private double precio;
+
+    // Constructor
+    public Perfume(String nombre, String marca, double capacidad, double precio) {
+        this.nombre = nombre;
+        this.marca = marca;
+        this.capacidad = capacidad;
+        this.precio = precio;
+    }
+
+    // Método para aplicar perfume
+    public void aplicarPerfume(double cantidad) {
+        if (cantidad > 0 && cantidad <= capacidad) {
+            capacidad -= cantidad;
+            System.out.println("Se aplicaron " + cantidad + " ml de perfume.");
+        } else {
+            System.out.println("No hay suficiente perfume disponible.");
+        }
+    }
+
+    // Consultar cantidad restante
+    public double consultarCantidadRestante() {
+        return capacidad;
+    }
+
+    // Ajustar precio
+    public void ajustarPrecio(double nuevoPrecio) {
+        if (nuevoPrecio > 0) {
+            precio = nuevoPrecio;
+            System.out.println("El nuevo precio es: $" + precio);
+        } else {
+            System.out.println("El precio debe ser mayor que 0.");
+        }
+    }
+
+    // Mostrar información
+    public void mostrarInformacion() {
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Marca: " + marca);
+        System.out.println("Cantidad restante: " + capacidad + " ml");
+        System.out.println("Precio: $" + precio);
+        System.out.println("---------------------------");
+    }
+}
