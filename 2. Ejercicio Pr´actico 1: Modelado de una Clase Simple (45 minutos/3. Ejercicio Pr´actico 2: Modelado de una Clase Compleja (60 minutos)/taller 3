@@ -1,0 +1,59 @@
+BibliotecaLibros/
+│
+├── README.md
+└── src/
+    ├── Libro.java
+    └── Main.java
+
+    public class Libro {
+
+    private String titulo;
+    private String autor;
+    private String ISBN;
+    private int numeroPaginas;
+    private boolean disponible;
+
+    // Constructor
+    public Libro(String titulo, String autor, String ISBN, int numeroPaginas) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.ISBN = ISBN;
+        this.numeroPaginas = numeroPaginas;
+        this.disponible = true; // al inicio el libro está disponible
+    }
+
+    // Método para prestar el libro
+    public void prestar() {
+        if (disponible) {
+            disponible = false;
+            System.out.println("El libro \"" + titulo + "\" ha sido prestado.");
+        } else {
+            System.out.println("El libro \"" + titulo + "\" no está disponible.");
+        }
+    }
+
+    // Método para devolver el libro
+    public void devolver() {
+        if (!disponible) {
+            disponible = true;
+            System.out.println("El libro \"" + titulo + "\" ha sido devuelto.");
+        } else {
+            System.out.println("El libro ya estaba disponible.");
+        }
+    }
+
+    // Método para verificar disponibilidad
+    public boolean estaDisponible() {
+        return disponible;
+    }
+
+    // Método para mostrar información del libro
+    public void mostrarInformacion() {
+        System.out.println("Título: " + titulo);
+        System.out.println("Autor: " + autor);
+        System.out.println("ISBN: " + ISBN);
+        System.out.println("Número de páginas: " + numeroPaginas);
+        System.out.println("Disponible: " + disponible);
+        System.out.println("---------------------------");
+    }
+}
