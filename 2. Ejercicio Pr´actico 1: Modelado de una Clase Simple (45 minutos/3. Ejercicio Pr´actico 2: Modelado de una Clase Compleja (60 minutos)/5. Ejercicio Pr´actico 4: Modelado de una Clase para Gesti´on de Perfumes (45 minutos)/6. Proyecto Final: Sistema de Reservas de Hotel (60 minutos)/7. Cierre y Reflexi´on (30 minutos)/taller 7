@@ -1,0 +1,47 @@
+ProyectoFinalPOO/
+│
+├── README.md
+└── src/
+    ├── CuentaBancaria.java
+    ├── Libro.java
+    ├── Perfume.java
+    ├── ReservaHotel.java
+    └── Main.java
+
+    public class Main {
+
+    public static void main(String[] args) {
+
+        System.out.println("==== SISTEMA DE PRUEBA DEL PROYECTO ====");
+
+        // Cuenta bancaria
+        CuentaBancaria cuenta = new CuentaBancaria("12345", "Juan Perez", 1000);
+        cuenta.depositar(500);
+        cuenta.retirar(200);
+        System.out.println("Saldo actual: " + cuenta.consultarSaldo());
+
+        System.out.println("----------------------------");
+
+        // Libro
+        Libro libro = new Libro("Cien años de soledad", "Gabriel Garcia Marquez", "1111", 417);
+        libro.prestar();
+        libro.devolver();
+        System.out.println("Disponible: " + libro.estaDisponible());
+
+        System.out.println("----------------------------");
+
+        // Perfume
+        Perfume perfume = new Perfume("Eros", "Versace", 100, 120);
+        perfume.aplicarPerfume(10);
+        System.out.println("Cantidad restante: " + perfume.consultarCantidadRestante());
+        perfume.ajustarPrecio(150);
+
+        System.out.println("----------------------------");
+
+        // Reserva de hotel
+        ReservaHotel reserva = new ReservaHotel("Carlos Gomez", "10/04/2026", "15/04/2026", 101);
+        reserva.nuevaReserva();
+        reserva.consultarReserva();
+        reserva.cancelarReserva();
+    }
+}
