@@ -1,0 +1,19 @@
+// Archivo: Boton.java
+
+public abstract class Boton {
+    // Corresponde a '+ field: type' -> Definimos un estado
+    protected boolean estaPresionado = false;
+    protected boolean estaEncendido = false; // Luz de indicación
+
+    // Corresponde a '+ method(type): type' -> Un método genérico para presionar
+    public abstract void presionar();
+
+    public void apagarLuz() {
+        this.estaEncendido = false;
+        System.out.println("Luz del botón apagada.");
+    }
+
+    public boolean isEstaEncendido() {
+        return estaEncendido;
+    }
+}
