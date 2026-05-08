@@ -1,15 +1,9 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-// ==========================================
 // ENUMS
-// ==========================================
 enum Direccion { SUBIENDO, BAJANDO, DETENIDO }
-
-// ==========================================
 // CLASES DE BOTONES (Herencia y Polimorfismo)
-// ==========================================
 abstract class Boton {
     protected boolean iluminado;
     protected String tipo;
@@ -19,7 +13,6 @@ abstract class Boton {
         this.iluminado = false;
     }
 
-    // Polimorfismo: Acción común para todos los botones
     public void presionar() {
         this.iluminado = true;
         System.out.println("[" + tipo + "] Sonido suave emitido. Botón iluminado.");
@@ -60,71 +53,86 @@ class BotonAscensor extends Boton {
     }
 }
 
-// ==========================================
-// CLASE PUERTA
-// ==========================================
-class Puerta {
-    private boolean abierta;
-    private boolean obstaculoDetectado;
+// CLASES DE PUERTAS (NUEVO: Herencia implementada)
+abstract class Puerta {
+    protected boolean abierta;
+    protected boolean obstaculoDetectado;
+    protected String identificador; // Para saber qué puerta es al imprimir
 
-    public Puerta() {
+    public Puerta(String identificador) {
+        this.identificador = identificador;
         this.abierta = false;
         this.obstaculoDetectado = false;
     }
 
     public void abrir() {
         abierta = true;
-        System.out.println("Puertas abriéndose automáticamente...");
+        System.out.println("[" + identificador + "] abriéndose automáticamente...");
     }
 
     public void cerrar() {
         if (obstaculoDetectado) {
-            System.out.println("ALERTA: Obstáculo detectado por los sensores. Las puertas no se pueden cerrar.");
+            System.out.println("ALERTA [" + identificador + "]: Obstáculo detectado por los sensores. Las puertas no se pueden cerrar.");
         } else {
             abierta = false;
-            System.out.println("Puertas cerrándose automáticamente...");
+            System.out.println("[" + identificador + "] cerrándose automáticamente...");
         }
-    }
-
-    public void mantenerAbierta() {
-        abierta = true;
-        System.out.println("Botón 'Mantener puertas abiertas' presionado. Puertas permanecen abiertas.");
     }
 
     public void setObstaculoDetectado(boolean estado) {
         this.obstaculoDetectado = estado;
     }
+    
+    public boolean isAbierta() {
+        return abierta;
+    }
 }
 
-// ==========================================
+// Hija 1: Puerta específica para cada piso
+class PuertaPiso extends Puerta {
+    public PuertaPiso(int numeroPiso) {
+        super("Puerta del Piso " + numeroPiso);
+    }
+}
+
+// Hija 2: Puerta específica de la cabina del ascensor
+class PuertaAscensor extends Puerta {
+    public PuertaAscensor() {
+        super("Puerta del Ascensor");
+    }
+
+    // Comportamiento exclusivo: El botón de mantener abierto está dentro del ascensor
+    public void mantenerAbierta() {
+        this.abierta = true;
+        System.out.println("[" + identificador + "] Botón 'Mantener puertas abiertas' presionado. Puertas permanecen abiertas.");
+    }
+}
+
 // CLASE PISO
-// ==========================================
 class Piso {
     private int numeroPiso;
     private BotonPiso botonSubida;
     private BotonPiso botonBajada;
-    private Puerta puertaPiso;
+    private PuertaPiso puertaPiso; // Actualizado para usar la clase hija
 
     public Piso(int numeroPiso) {
         this.numeroPiso = numeroPiso;
         this.botonSubida = new BotonPiso(Direccion.SUBIENDO);
         this.botonBajada = new BotonPiso(Direccion.BAJANDO);
-        this.puertaPiso = new Puerta();
+        this.puertaPiso = new PuertaPiso(numeroPiso); // Instancia la puerta del piso
     }
 
     public int getNumeroPiso() { return numeroPiso; }
     public BotonPiso getBotonSubida() { return botonSubida; }
     public BotonPiso getBotonBajada() { return botonBajada; }
-    public Puerta getPuertaPiso() { return puertaPiso; }
+    public PuertaPiso getPuertaPiso() { return puertaPiso; }
 }
 
-// ==========================================
 // CLASE ASCENSOR
-// ==========================================
 class Ascensor {
     private int pisoActual;
     private Direccion direccionActual;
-    private Puerta puertaAscensor;
+    private PuertaAscensor puertaAscensor; // Actualizado para usar la clase hija
     private List<Integer> solicitudesSubida;
     private List<Integer> solicitudesBajada;
     private boolean enEmergencia;
@@ -132,7 +140,7 @@ class Ascensor {
     public Ascensor() {
         this.pisoActual = 1; // Inicia en el piso 1
         this.direccionActual = Direccion.DETENIDO;
-        this.puertaAscensor = new Puerta();
+        this.puertaAscensor = new PuertaAscensor(); // Instancia la puerta del ascensor
         this.solicitudesSubida = new ArrayList<>();
         this.solicitudesBajada = new ArrayList<>();
         this.enEmergencia = false;
@@ -148,7 +156,7 @@ class Ascensor {
         }
     }
 
-    public void mover() {
+    public void mover(List<Piso> edificio) {
         if (enEmergencia) return;
 
         // Lógica de cambio de dirección y optimización
@@ -160,25 +168,32 @@ class Ascensor {
         if (direccionActual == Direccion.SUBIENDO) {
             if (!solicitudesSubida.isEmpty()) {
                 pisoActual = solicitudesSubida.remove(0);
-                llegarAPiso();
+                llegarAPiso(edificio);
             } else {
                 direccionActual = solicitudesBajada.isEmpty() ? Direccion.DETENIDO : Direccion.BAJANDO;
             }
         } else if (direccionActual == Direccion.BAJANDO) {
             if (!solicitudesBajada.isEmpty()) {
                 pisoActual = solicitudesBajada.remove(0);
-                llegarAPiso();
+                llegarAPiso(edificio);
             } else {
                 direccionActual = solicitudesSubida.isEmpty() ? Direccion.DETENIDO : Direccion.SUBIENDO;
             }
         }
     }
 
-    private void llegarAPiso() {
-        System.out.println("--- Ascensor ha llegado al piso " + pisoActual + " ---");
+    private void llegarAPiso(List<Piso> edificio) {
+        System.out.println("\n--- Ascensor ha llegado al piso " + pisoActual + " ---");
+        
+        // Se abren tanto las puertas del ascensor como las del piso actual
+        PuertaPiso puertaDelPisoActual = edificio.get(pisoActual - 1).getPuertaPiso();
+        
         puertaAscensor.abrir();
-        // Simulando tiempo de espera
+        puertaDelPisoActual.abrir();
+        
+        // Simulando tiempo de espera y cierre
         puertaAscensor.cerrar();
+        puertaDelPisoActual.cerrar();
     }
 
     public void activarEmergencia() {
@@ -188,14 +203,11 @@ class Ascensor {
         puertaAscensor.abrir(); // Protocolo de emergencia
     }
 
-    public Puerta getPuertaAscensor() { return puertaAscensor; }
+    public PuertaAscensor getPuertaAscensor() { return puertaAscensor; }
     public Direccion getDireccionActual() { return direccionActual; }
     public boolean isEnEmergencia() { return enEmergencia; }
 }
-
-// ==========================================
 // CLASE SISTEMACONTROL
-// ==========================================
 class SistemaControl {
     private Ascensor ascensor;
     private List<Piso> edificio;
@@ -222,7 +234,6 @@ class SistemaControl {
         BotonAscensor boton = new BotonAscensor(pisoDestino);
         boton.presionar();
         
-        // Determinar si sube o baja para optimizar
         Direccion dir = (pisoDestino > ascensor.getDireccionActual().ordinal()) ? Direccion.SUBIENDO : Direccion.BAJANDO;
         ascensor.solicitarPiso(pisoDestino, dir);
     }
@@ -235,7 +246,8 @@ class SistemaControl {
 
     public void simular() {
         while (ascensor.getDireccionActual() != Direccion.DETENIDO && !ascensor.isEnEmergencia()) {
-            ascensor.mover();
+            // Se pasa el edificio para que el ascensor pueda abrir la puerta del piso correspondiente
+            ascensor.mover(edificio); 
         }
         System.out.println("\nSimulación finalizada. Ascensor en reposo.");
     }
@@ -245,15 +257,13 @@ class SistemaControl {
     }
 }
 
-// ==========================================
 // CLASE MAIN (Ejecución del Sistema)
-// ==========================================
 public class Main {
     public static void main(String[] args) {
         System.out.println("Iniciando Sistema de Control de Ascensores...\n");
-        SistemaControl control = new SistemaControl(5); // Edificio de 5 pisos
+        SistemaControl control = new SistemaControl(5);
 
-        // 1. Simulación de solicitudes normales
+        //  Simulación de solicitudes normales
         control.llamarAscensorDesdePiso(3, Direccion.SUBIENDO);
         control.llamarAscensorDesdePiso(5, Direccion.BAJANDO);
         control.seleccionarPisoDesdeAscensor(4);
@@ -267,11 +277,11 @@ public class Main {
         control.getAscensor().getPuertaAscensor().setObstaculoDetectado(true);
         control.getAscensor().getPuertaAscensor().cerrar(); 
 
-        // 3. Simulación de mantener puertas abiertas
+        //  Simulación de mantener puertas abiertas (Solo en puerta de ascensor)
         System.out.println("\n--- Probando botón de mantener abierto ---");
         control.getAscensor().getPuertaAscensor().mantenerAbierta();
 
-        // 4. Simulación de falla y protocolo de emergencia
+        // Simulación de falla y protocolo de emergencia
         System.out.println("\n--- Probando Protocolo de Emergencia ---");
         control.reportarFalla("Motor de Dirección");
     }
