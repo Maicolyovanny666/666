@@ -7,7 +7,7 @@ enum Direccion { SUBIENDO, BAJANDO, DETENIDO }
 abstract class Boton {
     protected boolean iluminado;
     protected String tipo;
-
+    
     public Boton(String tipo) {
         this.tipo = tipo;
         this.iluminado = false;
