@@ -1,0 +1,14 @@
+{
+  "name": "agente-bucle-ia",
+  "version": "1.0.0",
+  "description": "Agente IA con bucle especificar -> planear -> ejecutar -> validar",
+  "main": "agente.js",
+  "type": "module",
+  "scripts": {
+    "start": "node agente.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.5"
+  }
+}
