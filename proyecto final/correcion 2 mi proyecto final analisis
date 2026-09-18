@@ -1,0 +1,53 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+print("Descargando el dataset...")
+url_dataset = 'https://raw.githubusercontent.com/mwaskom/seaborn-data/master/diamonds.csv'
+df = pd.read_csv(url_dataset)
+print("¡Dataset cargado!")
+
+# 1. ANÁLISIS CUALITATIVO (BARRAS)
+conteo = df['cut'].value_counts()
+
+print("Generando Gráfico 1 (Barras)...")
+plt.figure(figsize=(10, 6))
+conteo.plot(kind='bar', color='cornflowerblue', edgecolor='black')
+plt.title('Cantidad de diamantes según la calidad de su corte', fontsize=14)
+plt.xlabel('Calidad del Corte (Variable Cualitativa)', fontsize=12)
+plt.ylabel('Cantidad Total', fontsize=12)
+plt.xticks(rotation=0) 
+plt.tight_layout()
+
+# IMPORTANTE: Aquí guardamos la gráfica en lugar de intentar mostrarla en ventana
+plt.savefig('grafico_1_barras.png')
+plt.close() # Limpiamos la memoria
+
+# 2. ANÁLISIS CUALITATIVO (TORTA/PASTEL)
+print("Generando Gráfico 2 (Torta)...")
+plt.figure(figsize=(8, 8))
+conteo.plot(kind='pie', autopct='%1.1f%%', cmap='Set3', startangle=90)
+plt.title('Distribución porcentual según el corte', fontsize=14)
+plt.ylabel('')
+
+# Guardamos la gráfica
+plt.savefig('grafico_2_torta.png')
+plt.close()
+
+# 3. ANÁLISIS CUALITATIVO VS CUANTITATIVO
+print("Generando Gráfico 3 (Relación)...")
+resultado = df.groupby('cut')['price'].mean()
+resultado = resultado.sort_values(ascending=False)
+
+plt.figure(figsize=(10, 6))
+resultado.plot(kind='bar', color='seagreen', edgecolor='black')
+plt.title('Precio Promedio de los Diamantes según su Corte', fontsize=15)
+plt.xlabel('Calidad del Corte (Variable Cualitativa)', fontsize=12)
+plt.ylabel('Precio Promedio en Dólares (Variable Cuantitativa)', fontsize=12)
+plt.xticks(rotation=0)
+plt.tight_layout()
+
+# Guardamos la gráfica
+plt.savefig('grafico_3_relacion.png')
+plt.close()
+
+print("\n¡Listo! Revisa tus archivos en el menú de la izquierda, encontrarás las 3 imágenes (.png).")
