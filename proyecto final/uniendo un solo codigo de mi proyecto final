@@ -1,0 +1,66 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# =================================================================
+# PASO EXTRA: CREAR UN ARCHIVO DE PRUEBA
+# (Esto crea un archivo falso para que el código funcione ahora mismo)
+# =================================================================
+datos_falsos = {
+    'Marca_Celular': ['Samsung', 'Apple', 'Xiaomi', 'Samsung', 'Apple', 'Motorola', 'Samsung', 'Xiaomi'],
+    'Precio': [300, 900, 250, None, 950, 150, 320, None]
+}
+df_prueba = pd.DataFrame(datos_falsos)
+df_prueba.to_csv('datos_de_prueba.csv', index=False)
+
+# ==========================================
+# 1. CARGAR EL DATASET
+# ==========================================
+df = pd.read_csv('datos_de_prueba.csv')
+
+# ==========================================
+# 2. LIMPIEZA DE DATOS
+# ==========================================
+print("--- LIMPIEZA DE DATOS ---")
+print("Datos nulos antes de la limpieza:")
+print(df.isnull().sum())
+
+# Rellenar vacíos
+df['Marca_Celular'] = df['Marca_Celular'].fillna('Sin Registro')
+promedio = df['Precio'].mean()
+df['Precio'] = df['Precio'].fillna(promedio)
+
+print("\nDatos nulos después de la limpieza:")
+print(df.isnull().sum())
+print("-" * 25 + "\n")
+
+# ==========================================
+# 3. ANÁLISIS DE UNA VARIABLE CUALITATIVA
+# ==========================================
+conteo = df['Marca_Celular'].value_counts()
+
+# --- Gráfico de Barras ---
+plt.figure(figsize=(8, 5))
+conteo.plot(kind='bar', color='cornflowerblue', edgecolor='black')
+plt.title('Cantidad de registros por Marca', fontsize=14)
+plt.xticks(rotation=0)
+plt.show() 
+
+# --- Gráfico de Torta (Pastel) ---
+plt.figure(figsize=(6, 6))
+conteo.plot(kind='pie', autopct='%1.1f%%', cmap='Set3')
+plt.title('Distribución porcentual de Marcas', fontsize=14)
+plt.ylabel('')
+plt.show() 
+
+# ==========================================
+# 4. ANÁLISIS CUALITATIVO VS CUANTITATIVO
+# ==========================================
+resultado = df.groupby('Marca_Celular')['Precio'].mean()
+resultado = resultado.sort_values(ascending=False)
+
+# --- Gráfico de Barras de Relación ---
+plt.figure(figsize=(8, 5))
+resultado.plot(kind='bar', color='seagreen', edgecolor='black')
+plt.title('Precio Promedio por Marca', fontsize=15)
+plt.xticks(rotation=0)
+plt.show()
