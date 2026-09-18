@@ -1,0 +1,30 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. Cargar el dataset
+df = pd.read_csv('nombre_del_archivo.csv')
+
+# 2. Agrupar y calcular
+# Reemplaza los nombres de las columnas por los tuyos.
+# Usamos .mean() para obtener el PROMEDIO. 
+# Si necesitas el TOTAL acumulado, cambia .mean() por .sum()
+resultado = df.groupby('columna_cualitativa')['columna_cuantitativa'].mean()
+
+# (Opcional) Ordenar los valores de mayor a menor para que el gráfico se vea profesional
+resultado = resultado.sort_values(ascending=False)
+
+# 3. Configurar y dibujar el gráfico de barras
+plt.figure(figsize=(12, 6)) # Tamaño un poco más ancho
+resultado.plot(kind='bar', color='seagreen', edgecolor='black')
+
+# 4. Personalizar textos
+plt.title('Relación entre Variable Cualitativa y Cuantitativa', fontsize=15)
+plt.xlabel('Categorías (Cualitativa)', fontsize=12)
+plt.ylabel('Valor Calculado (Cuantitativa)', fontsize=12)
+
+# Girar las etiquetas del eje X para que los nombres largos no se superpongan
+plt.xticks(rotation=45, ha='right')
+
+# Ajustar márgenes y mostrar
+plt.tight_layout()
+plt.show()

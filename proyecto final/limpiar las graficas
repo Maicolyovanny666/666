@@ -1,0 +1,27 @@
+import pandas as pd
+
+# 1. Cargar el dataset
+df = pd.read_csv('nombre_del_archivo.csv')
+
+# PASO 1: REVISAR
+print("Datos nulos antes de la limpieza:")
+print(df.isnull().sum())
+
+# PASO 2: LIMPIAR (Elige solo UNA de estas dos opciones según tu caso)
+
+# --- Opción A: Borrar ---
+# Borra las filas que tengan casillas vacías en tu columna principal
+df = df.dropna(subset=['columna_cualitativa', 'columna_cuantitativa'])
+
+# --- Opción B: Rellenar ---
+# Rellena los textos vacíos con la palabra "Sin Registro"
+df['columna_cualitativa'] = df['columna_cualitativa'].fillna('Sin Registro')
+
+# Rellena los números vacíos con el promedio de esa columna
+promedio = df['columna_cuantitativa'].mean()
+df['columna_cuantitativa'] = df['columna_cuantitativa'].fillna(promedio)
+
+
+# PASO 3: VERIFICAR
+print("\nDatos nulos después de la limpieza (deberían ser cero):")
+print(df.isnull().sum())
