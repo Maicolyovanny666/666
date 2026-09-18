@@ -1,0 +1,40 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. Cargar el dataset
+df = pd.read_csv('nombre_del_archivo.csv')
+
+# 2. Contar los datos de tu variable cualitativa
+# Esto agrupa y cuenta cuántas veces aparece cada categoría
+conteo = df['nombre_columna'].value_counts()
+
+# ==========================================
+# OPCIÓN A: GRÁFICO DE BARRAS
+# ==========================================
+plt.figure(figsize=(10, 6)) # Define el tamaño del gráfico (ancho, alto)
+
+# kind='bar' indica que es de barras. Puedes cambiar el color.
+conteo.plot(kind='bar', color='cornflowerblue', edgecolor='black')
+
+# Personalización del gráfico
+plt.title('Cantidad de registros por categoría', fontsize=14)
+plt.xlabel('Categorías', fontsize=12)
+plt.ylabel('Cantidad', fontsize=12)
+plt.xticks(rotation=45) # Gira los textos de abajo a 45 grados para que se lean bien
+
+plt.tight_layout() # Ajusta los márgenes automáticamente
+plt.show() # Muestra el gráfico en pantalla
+
+# ==========================================
+# OPCIÓN B: GRÁFICO DE TORTA (PASTEL)
+# ==========================================
+plt.figure(figsize=(8, 8))
+
+# kind='pie' genera la torta. 
+# autopct='%1.1f%%' calcula y dibuja los porcentajes automáticamente.
+conteo.plot(kind='pie', autopct='%1.1f%%', startangle=90, cmap='Set3')
+
+plt.title('Distribución porcentual', fontsize=14)
+plt.ylabel('') # Oculta la etiqueta lateral por defecto para que se vea más limpio
+
+plt.show()
