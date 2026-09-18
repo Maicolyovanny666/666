@@ -1,0 +1,76 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ==========================================
+# 1. CARGAR EL DATASET DESDE INTERNET
+# ==========================================
+print("Descargando el dataset de más de 50,000 datos desde internet...")
+print("Por favor espera unos segundos...")
+
+# Usamos la URL oficial directa al archivo CSV. Pandas lo lee directamente.
+url_dataset = 'https://raw.githubusercontent.com/mwaskom/seaborn-data/master/diamonds.csv'
+df = pd.read_csv(url_dataset)
+
+print(f"\n¡Éxito! El dataset se cargó correctamente.")
+print(f"Total de filas (datos): {df.shape[0]}")
+print(f"Total de columnas: {df.shape[1]}")
+
+# ==========================================
+# 2. LIMPIEZA DE DATOS
+# ==========================================
+print("\n--- LIMPIEZA DE DATOS ---")
+print("Revisando si hay datos nulos...")
+nulos = df.isnull().sum().sum()
+
+if nulos == 0:
+    print("¡Excelente! El dataset está completamente limpio, no hay casillas vacías.")
+else:
+    # Si hubiera nulos, los rellenamos para evitar errores
+    df['cut'] = df['cut'].fillna('Sin Registro')
+    df['price'] = df['price'].fillna(df['price'].mean())
+    print("Se limpiaron los datos nulos.")
+
+print("-" * 30)
+
+# ==========================================
+# 3. ANÁLISIS DE LA VARIABLE CUALITATIVA 
+# ==========================================
+# Vamos a analizar la columna 'cut' (Calidad del corte del diamante)
+conteo = df['cut'].value_counts()
+
+print("\nGenerando Gráfico de Barras...")
+plt.figure(figsize=(10, 6))
+conteo.plot(kind='bar', color='cornflowerblue', edgecolor='black')
+plt.title('Cantidad de diamantes según la calidad de su corte', fontsize=14)
+plt.xlabel('Calidad del Corte (Variable Cualitativa)', fontsize=12)
+plt.ylabel('Cantidad Total', fontsize=12)
+plt.xticks(rotation=0) 
+plt.tight_layout()
+plt.show() # Cierra la ventana del gráfico para ver el siguiente
+
+print("Generando Gráfico de Torta...")
+plt.figure(figsize=(8, 8))
+conteo.plot(kind='pie', autopct='%1.1f%%', cmap='Set3', startangle=90)
+plt.title('Distribución porcentual según el corte', fontsize=14)
+plt.ylabel('')
+plt.show() # Cierra la ventana del gráfico para ver el siguiente
+
+# ==========================================
+# 4. ANÁLISIS CUALITATIVO VS CUANTITATIVO
+# ==========================================
+# Vamos a cruzar 'cut' (Cualitativa) con 'price' (Cuantitativa)
+# Calculamos el Precio Promedio para cada tipo de corte
+print("\nGenerando Gráfico de Relación (Cualitativa vs Cuantitativa)...")
+resultado = df.groupby('cut')['price'].mean()
+resultado = resultado.sort_values(ascending=False)
+
+plt.figure(figsize=(10, 6))
+resultado.plot(kind='bar', color='seagreen', edgecolor='black')
+plt.title('Precio Promedio de los Diamantes según su Corte', fontsize=15)
+plt.xlabel('Calidad del Corte (Variable Cualitativa)', fontsize=12)
+plt.ylabel('Precio Promedio en Dólares (Variable Cuantitativa)', fontsize=12)
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show() 
+
+print("\n¡Análisis finalizado con éxito!")
