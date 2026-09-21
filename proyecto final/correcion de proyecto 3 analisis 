@@ -1,0 +1,54 @@
+import pandas as pd
+from sklearn.datasets import fetch_openml
+
+def main():
+    print("Descargando el dataset 'Airlines' desde OpenML (Sitio autorizado)...")
+    print("Esto puede tardar unos segundos ya que contiene más de 500.000 registros.\n")
+    
+    # 1. Cargar el dataset (Airlines - ID 1169 en OpenML)
+    # as_frame=True nos devuelve los datos en un DataFrame de Pandas (ideal para análisis)
+    dataset = fetch_openml(name='airlines', version=1, as_frame=True, parser='auto')
+    df = dataset.frame
+
+    # 2. Comprobar la cantidad de datos (Debe ser mayor a 50.000)
+    num_filas, num_columnas = df.shape
+    print("="*50)
+    print(f"✅ CARGA EXITOSA")
+    print(f"Total de registros (filas): {num_filas}")
+    print(f"Total de características (columnas): {num_columnas}")
+    print("="*50, "\n")
+
+    if num_filas > 50000:
+        print("✔️ Cumple con el requisito del profesor: Tiene más de 50.000 datos.\n")
+
+    # 3. Separar y mostrar variables Cualitativas (Categóricas) y Cuantitativas (Numéricas)
+    # Seleccionamos las columnas numéricas (int, float)
+    cuantitativas = df.select_dtypes(include=['number', 'float64', 'int64']).columns.tolist()
+    # Seleccionamos las columnas categóricas o de texto (object, category)
+    cualitativas = df.select_dtypes(include=['object', 'category']).columns.tolist()
+
+    print("📊 CLASIFICACIÓN DE VARIABLES:")
+    print("-" * 30)
+    print(f"📌 Variables Cualitativas (Cualidades/Categorías):")
+    for col in cualitativas:
+        print(f"   - {col}")
+
+    print(f"\n📈 Variables Cuantitativas (Valores numéricos):")
+    for col in cuantitativas:
+        print(f"   - {col}")
+    print("-" * 30, "\n")
+
+    # 4. Mostrar una muestra de los datos
+    print("👀 MUESTRA DE LOS PRIMEROS 5 REGISTROS DEL DATASET:")
+    print(df.head(), "\n")
+
+    # 5. Análisis estadístico básico de las variables Cuantitativas
+    print("🔢 RESUMEN ESTADÍSTICO DE LAS VARIABLES CUANTITATIVAS:")
+    print(df[cuantitativas].describe(), "\n")
+    
+    # 6. Análisis básico de una variable Cualitativa (ejemplo: Aerolíneas)
+    print("🔠 CONTEO DE DATOS DE UNA VARIABLE CUALITATIVA (Ej. Aerolínea 'Airline'):")
+    print(df['Airline'].value_counts().head(5)) # Muestra las 5 aerolíneas con más vuelos
+
+if __name__ == "__main__":
+    main()
