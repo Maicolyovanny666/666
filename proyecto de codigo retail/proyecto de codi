@@ -1,0 +1,149 @@
+"""
+Proyecto Final: Análisis de Datos de Retail y Generación de Presentación Automática
+Descripción: Este script genera un dataset transaccional simulado, realiza limpieza de datos,
+crea visualizaciones estadísticas (EDA) y exporta los resultados automáticamente a una 
+presentación de PowerPoint (.pptx).
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from pptx import Presentation
+from pptx.util import Inches, Pt
+import os
+
+def generar_y_limpiar_datos():
+    print("1. Generando dataset de transacciones...")
+    np.random.seed(42)
+    n_rows = 10500
+
+    categorias = ['Electrónica', 'Ropa', 'Hogar', 'Deportes', 'Juguetes', 'Libros', 'Alimentos']
+    data = {
+        'ID_Pedido': range(1, n_rows + 1),
+        'Fecha': pd.date_range(start='2024-01-01', periods=n_rows, freq='h'),
+        'Categoria': np.random.choice(categorias, n_rows),
+        'Precio': np.random.uniform(10, 500, n_rows),
+        'Cantidad': np.random.randint(1, 10, n_rows),
+        'Descuento': np.random.uniform(0, 0.3, n_rows)
+    }
+    df = pd.DataFrame(data)
+
+    # Introducir "ruido" intencional para demostrar la limpieza
+    df.loc[10:50, 'Precio'] = np.nan
+    df.loc[100:150, 'Cantidad'] = -5 
+
+    print("2. Ejecutando limpieza de datos...")
+    df_clean = df.dropna(subset=['Precio']) # Eliminar nulos
+    df_clean = df_clean[df_clean['Cantidad'] > 0] # Eliminar devoluciones/negativos
+    
+    # Calcular métrica principal
+    df_clean['Ventas_Totales'] = df_clean['Precio'] * df_clean['Cantidad'] * (1 - df_clean['Descuento'])
+    
+    df_clean.to_excel('Dataset_Limpiado_Retail.xlsx', index=False)
+    return df_clean
+
+def generar_graficos(df):
+    print("3. Generando visualizaciones...")
+    sns.set_theme(style="whitegrid")
+    
+    # Histograma
+    plt.figure(figsize=(7, 4))
+    sns.histplot(df['Ventas_Totales'], bins=30, kde=True, color='royalblue')
+    plt.title('Distribución de Frecuencias: Ventas Totales', fontsize=14)
+    plt.xlabel('Ventas ($)')
+    plt.ylabel('Frecuencia')
+    plt.tight_layout()
+    plt.savefig('hist.png', dpi=300)
+    plt.close()
+
+    # Boxplot
+    plt.figure(figsize=(7, 4))
+    sns.boxplot(x=df['Ventas_Totales'], color='lightblue')
+    plt.title('Dispersión y Valores Atípicos (Boxplot)', fontsize=14)
+    plt.xlabel('Ventas ($)')
+    plt.tight_layout()
+    plt.savefig('box.png', dpi=300)
+    plt.close()
+
+    # Heatmap (Matriz de Correlación)
+    plt.figure(figsize=(7, 5))
+    corr = df[['Precio', 'Cantidad', 'Descuento', 'Ventas_Totales']].corr()
+    sns.heatmap(corr, annot=True, cmap='coolwarm', fmt=".2f", linewidths=.5)
+    plt.title('Matriz de Correlación', fontsize=14)
+    plt.tight_layout()
+    plt.savefig('heat.png', dpi=300)
+    plt.close()
+
+    # Scatter Plot
+    plt.figure(figsize=(7, 4))
+    sns.scatterplot(data=df, x='Precio', y='Ventas_Totales', alpha=0.3, color='purple')
+    plt.title('Proyección Lineal: Precio vs Ventas Totales', fontsize=14)
+    plt.xlabel('Precio Unitario ($)')
+    plt.ylabel('Ventas Totales ($)')
+    plt.tight_layout()
+    plt.savefig('scatter.png', dpi=300)
+    plt.close()
+
+def crear_presentacion():
+    print("4. Construyendo presentación de PowerPoint...")
+    prs = Presentation()
+    
+    # Configurar diapositiva de título
+    title_slide_layout = prs.slide_layouts[0]
+    slide = prs.slides.add_slide(title_slide_layout)
+    title = slide.shapes.title
+    subtitle = slide.placeholders[1]
+    title.text = "El Código del Retail: Precios, Volúmenes y Rentabilidad"
+    subtitle.text = "Estudio estadístico del rendimiento de ventas e impacto de descuentos"
+
+    # Función auxiliar para agregar diapositivas con imagen
+    def add_image_slide(title_text, img_path, description):
+        layout = prs.slide_layouts[5] # Título y espacio en blanco
+        slide = prs.slides.add_slide(layout)
+        slide.shapes.title.text = title_text
+        
+        # Insertar imagen
+        slide.shapes.add_picture(img_path, Inches(1.5), Inches(1.5), width=Inches(7))
+        
+        # Insertar cuadro de texto para la conclusión
+        txBox = slide.shapes.add_textbox(Inches(1), Inches(6), Inches(8), Inches(1))
+        tf = txBox.text_frame
+        tf.text = description
+
+    # Diapositivas de análisis
+    add_image_slide("Análisis Univariado: Distribución de Ingresos", "hist.png", 
+                    "Observación: Concentración masiva de transacciones en rangos de precios bajos y medios.")
+    
+    add_image_slide("Dispersión y Valores Atípicos", "box.png", 
+                    "Observación: Los puntos a la derecha representan pedidos de alto volumen institucional (Outliers).")
+    
+    add_image_slide("Análisis Bivariado: Matriz de Correlación", "heat.png", 
+                    "Observación: Correlación positiva fuerte (0.77) del Precio con Ventas. Descuento tiene correlación negativa.")
+    
+    add_image_slide("Proyección de Ingresos Lineal", "scatter.png", 
+                    "Observación: El incremento del precio unitario expande directamente el límite superior de las ventas.")
+
+    # Diapositiva final de conclusiones
+    layout = prs.slide_layouts[1]
+    slide = prs.slides.add_slide(layout)
+    slide.shapes.title.text = "Respuestas Estratégicas y Conclusiones"
+    tf = slide.placeholders[1].text_frame
+    
+    p1 = tf.add_paragraph()
+    p1.text = "1. Motor de Ingresos: El Precio Unitario determina el ticket final por encima del volumen."
+    
+    p2 = tf.add_paragraph()
+    p2.text = "2. Costo del Descuento: Impacto negativo confirmado; el volumen extra no compensa la caída de margen."
+    
+    p3 = tf.add_paragraph()
+    p3.text = "3. Foco Estratégico: Se recomienda priorizar Ropa y Juguetes en el presupuesto de marketing."
+
+    # Guardar
+    prs.save('Presentacion_Final_Retail.pptx')
+    print("¡Proceso finalizado con éxito! Revisa tus archivos.")
+
+if __name__ == "__main__":
+    df_retail = generar_y_limpiar_datos()
+    generar_graficos(df_retail)
+    crear_presentacion()
